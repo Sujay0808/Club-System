@@ -2,13 +2,21 @@ from django.db import models
 
 # Create your models here.
 class Club(models.Model):
-    member_PRN = models.IntegerField(primary_key=True)
+    club_id = models.IntegerField(primary_key=True)
     club_name = models.CharField(max_length=20)
-    member_name = models.CharField(max_length=20)
-    designation = models.CharField(max_length=20)
 
     def __str__(self):
-        return f'{self.club_name}'
+        return f'{self.club_id}'
+
+class Club_Member(models.Model):
+    member_PRN = models.IntegerField(primary_key=True)
+    member_name = models.CharField(max_length=20)
+    designation = models.CharField(max_length=20)
+    club_id = models.ForeignKey(Club, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return f'{self.member_PRN}'
+
 
 class Workshop(models.Model):
     workshop_id = models.IntegerField(primary_key=True)
@@ -20,7 +28,7 @@ class Workshop(models.Model):
     registration_fee = models.CharField(max_length=20)
 
     def __str__(self):
-        return f'{self.workshop_name}'
+        return f'{self.workshop_id}'
 
 class Carnival(models.Model):
     game_id = models.CharField(primary_key=True, max_length=20)
@@ -30,7 +38,7 @@ class Carnival(models.Model):
     participation_fee = models.CharField(max_length=20)
 
     def __str__(self):
-        return f'{self.game_name}'
+        return f'{self.game_id}'
 
 class Participant(models.Model):
     candidate_PRN = models.CharField(max_length=20, primary_key=True)
@@ -40,7 +48,7 @@ class Participant(models.Model):
     department_name = models.CharField(max_length=20)
 
     def __str__(self):
-        return f'{self.candidate_name}'
+        return f'{self.candidate_PRN}'
 
 class Guest_Lecture(models.Model):
     lecture_id = models.CharField(max_length=20, primary_key=True)
@@ -51,28 +59,28 @@ class Guest_Lecture(models.Model):
     time = models.CharField(max_length=20)
 
     def __str__(self):
-        return f'{self.topic_name}'
+        return f'{self.lecture_id}'
 
-class Attend(models.Model):
-    member_PRN = models.ForeignKey(Club, on_delete=models.CASCADE)
+class Conduct(models.Model):
+    club_id = models.ForeignKey(Club, on_delete=models.CASCADE)
     workshop_id = models.ForeignKey(Workshop, on_delete=models.CASCADE)
 
     def __str__(self):
-        return f'{self.member_PRN} attends {self.workshop_id}'
+        return f'{self.club_id} conducts {self.workshop_id}'
 
 class Coordinate(models.Model):
-    member_PRN = models.ForeignKey(Club, on_delete=models.CASCADE)
+    club_id = models.ForeignKey(Club, on_delete=models.CASCADE)
     game_id = models.ForeignKey(Carnival, on_delete=models.CASCADE)
 
     def __str__(self):
-        return f'{self.member_PRN} coordinates {self.game_id}'
+        return f'{self.club_id} coordinates {self.game_id}'
 
 class Arrange(models.Model):
-    member_PRN = models.ForeignKey(Club, on_delete=models.CASCADE)
+    club_id = models.ForeignKey(Club, on_delete=models.CASCADE)
     lecture_id = models.ForeignKey(Guest_Lecture, on_delete=models.CASCADE)
 
     def __str__(self):
-        return f'{self.member_PRN} arranges {self.lecture_id}'
+        return f'{self.club_id} arranges {self.lecture_id}'
 
 class Participation1(models.Model):
     workshop_id = models.ForeignKey(Workshop, on_delete=models.CASCADE)
@@ -93,6 +101,6 @@ class Participation2(models.Model):
 class Participation3(models.Model):
     candidate_PRN = models.ForeignKey(Participant, on_delete=models.CASCADE)
     lecture_id = models.ForeignKey(Guest_Lecture, on_delete=models.CASCADE)
-    
+
     def __str__(self):
         return f'{self.candidate_PRN} participates in lecture {self.lecture_id}'
