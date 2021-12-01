@@ -15,7 +15,12 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
+from app.views import View
 
 urlpatterns = [
-    path('', admin.site.urls),
+    path('admin/', admin.site.urls),
+    path('', View),
+    path('<str:modelName>/', View),
+    path('<str:modelName>/<str:primeKey>/', View),
 ]
+#<str:model>/<str:primeKey>/
